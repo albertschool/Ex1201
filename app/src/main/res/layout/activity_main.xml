@@ -10,10 +10,12 @@
 
 
     <TextView
-        android:text="Users"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center" />
+        android:gravity="center"
+        android:text="Users"
+        android:textSize="24sp"
+        android:textStyle="bold" />
 
     <EditText
         android:layout_width="match_parent"
@@ -50,10 +52,12 @@
         android:layout_height="20dp" />
 
     <TextView
-        android:text="Grades"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center" />
+        android:gravity="center"
+        android:text="Grades"
+        android:textSize="24sp"
+        android:textStyle="bold" />
 
     <EditText
         android:layout_width="match_parent"
