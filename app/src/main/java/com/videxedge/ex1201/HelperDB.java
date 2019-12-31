@@ -44,7 +44,6 @@ public class HelperDB extends SQLiteOpenHelper {
         strCreate+=" "+GRADE+" INTEGER";
         strCreate+=");";
         db.execSQL(strCreate);
-
     }
 
     @Override
