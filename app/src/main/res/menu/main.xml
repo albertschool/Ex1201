@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/menuDataIn"
+        android:title="Data In"
+        android:orderInCategory="100" />
+
+    <item
+        android:id="@+id/menuWatch"
+        android:title="Watch"
+        android:orderInCategory="200" />
+
+    <item
+        android:id="@+id/menuFilter"
+        android:title="Filter"
+        android:orderInCategory="300" />
+
+    <item
+        android:id="@+id/menuSort"
+        android:title="Sort"
+        android:orderInCategory="400" />
+
+    <item
+        android:id="@+id/menuUpdate"
+        android:title="Update"
+        android:orderInCategory="500" />
+
+</menu>

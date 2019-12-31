@@ -1,10 +1,14 @@
 package com.videxedge.ex1201;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
@@ -24,22 +28,25 @@ public class Watchtables extends AppCompatActivity  implements AdapterView.OnIte
     Cursor c;
 
     ListView lvtables, lvrecords;
+    ArrayList<String> tbl = null;
     ArrayAdapter adp;
     int tablechoise;
+    AlertDialog.Builder adb;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_watchtables);
 
+        lvtables=(ListView)findViewById(R.id.lvtables);
+        lvrecords=(ListView)findViewById(R.id.lvrecords);
+
         hlp=new HelperDB(this);
         db=hlp.getWritableDatabase();
         db.close();
 
-        lvtables=(ListView)findViewById(R.id.lvtables);
         lvtables.setOnItemClickListener(this);
         lvtables.setChoiceMode(AbsListView.CHOICE_MODE_SINGLE);
-        lvrecords=(ListView)findViewById(R.id.lvrecords);
         lvrecords.setOnItemClickListener(this);
         lvrecords.setChoiceMode(AbsListView.CHOICE_MODE_SINGLE);
 
@@ -51,20 +58,14 @@ public class Watchtables extends AppCompatActivity  implements AdapterView.OnIte
 
     }
 
-    public void back(View view) {
-        Intent t = new Intent(this, MainActivity.class);
-        startActivity(t);
-
-    }
-
     @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        if (parent==lvtables) {
+    public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
+        if (parent == lvtables) {
+            tbl = null;
             tablechoise = position + 1;
             if (tablechoise != 0) {
-                hlp = new HelperDB(this);
                 db = hlp.getWritableDatabase();
-                ArrayList<String> tbl = new ArrayList<>();
+                tbl = new ArrayList<>();
                 if (tablechoise == 1) {
                     Cursor c = db.query(TABLE_USERS, null, null, null, null, null, null);
                     int col1 = c.getColumnIndex(Users.KEY_ID);
@@ -104,6 +105,47 @@ public class Watchtables extends AppCompatActivity  implements AdapterView.OnIte
             } else {
                 Toast.makeText(this, "Choose table", Toast.LENGTH_SHORT).show();
             }
+        } else {
+            String strtmp = tbl.get(position);
+            adb = new AlertDialog.Builder(this);
+            adb.setTitle("Are you sure ?");
+            adb.setMessage("Are you sure you want to delete " + strtmp);
+            adb.setPositiveButton("Yes!", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    db = hlp.getWritableDatabase();
+                    if (tablechoise == 1) {
+                        db.delete(TABLE_USERS, "_id=?", new String[]{Integer.toString(position + 1)});
+                    } else {
+                        db.delete(TABLE_GRADES, "_id=?", new String[]{Integer.toString(position + 1)});
+                    }
+                    db.close();
+                }
+            });
+            adb.setNeutralButton("Cancel !", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.cancel();
+                }
+            });
+            AlertDialog ad = adb.create();
+            ad.show();
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu (Menu menu) {
+        getMenuInflater().inflate(R.menu.main,menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected (MenuItem item) {
+        int id = item.getItemId();
+        if (id==R.id.menuDataIn) {
+            Intent t = new Intent(this, MainActivity.class);
+            startActivity(t);
+        }
+        return true;
     }
 }
