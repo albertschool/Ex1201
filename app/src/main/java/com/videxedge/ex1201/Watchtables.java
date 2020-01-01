@@ -19,6 +19,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 
 import static com.videxedge.ex1201.Grades.TABLE_GRADES;
+import static com.videxedge.ex1201.Users.KEY_ID;
 import static com.videxedge.ex1201.Users.TABLE_USERS;
 
 public class Watchtables extends AppCompatActivity  implements AdapterView.OnItemClickListener {
@@ -115,9 +116,9 @@ public class Watchtables extends AppCompatActivity  implements AdapterView.OnIte
                 public void onClick(DialogInterface dialog, int which) {
                     db = hlp.getWritableDatabase();
                     if (tablechoise == 1) {
-                        db.delete(TABLE_USERS, "_id=?", new String[]{Integer.toString(position + 1)});
+                        db.delete(TABLE_USERS, KEY_ID+"=?", new String[]{Integer.toString(position + 1)});
                     } else {
-                        db.delete(TABLE_GRADES, "_id=?", new String[]{Integer.toString(position + 1)});
+                        db.delete(TABLE_GRADES, KEY_ID+"=?", new String[]{Integer.toString(position + 1)});
                     }
                     db.close();
                     tbl.remove(position);
