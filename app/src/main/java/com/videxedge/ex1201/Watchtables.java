@@ -28,7 +28,7 @@ public class Watchtables extends AppCompatActivity  implements AdapterView.OnIte
     Cursor c;
 
     ListView lvtables, lvrecords;
-    ArrayList<String> tbl = null;
+    ArrayList<String> tbl = new ArrayList<>();
     ArrayAdapter adp;
     int tablechoise;
     AlertDialog.Builder adb;
@@ -110,7 +110,7 @@ public class Watchtables extends AppCompatActivity  implements AdapterView.OnIte
             adb = new AlertDialog.Builder(this);
             adb.setTitle("Are you sure ?");
             adb.setMessage("Are you sure you want to delete " + strtmp);
-            adb.setPositiveButton("Yes!", new DialogInterface.OnClickListener() {
+            adb.setPositiveButton("Yes !", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     db = hlp.getWritableDatabase();
@@ -120,6 +120,8 @@ public class Watchtables extends AppCompatActivity  implements AdapterView.OnIte
                         db.delete(TABLE_GRADES, "_id=?", new String[]{Integer.toString(position + 1)});
                     }
                     db.close();
+                    tbl.remove(position);
+                    adp.notifyDataSetChanged();
                 }
             });
             adb.setNeutralButton("Cancel !", new DialogInterface.OnClickListener() {
