@@ -81,6 +81,9 @@ public class MainActivity extends AppCompatActivity {
         if (id==R.id.menuWatch) {
             Intent t = new Intent(this, Watchtables.class);
             startActivity(t);
+        } else if (id==R.id.menuUpdate) {
+            Intent t = new Intent(this, Update.class);
+            startActivity(t);
         }
         return true;
     }

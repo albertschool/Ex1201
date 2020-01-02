@@ -68,36 +68,36 @@ public class Watchtables extends AppCompatActivity  implements AdapterView.OnIte
                 db = hlp.getWritableDatabase();
                 tbl = new ArrayList<>();
                 if (tablechoise == 1) {
-                    Cursor c = db.query(TABLE_USERS, null, null, null, null, null, null);
-                    int col1 = c.getColumnIndex(Users.KEY_ID);
-                    int col2 = c.getColumnIndex(Users.NAME);
-                    int col3 = c.getColumnIndex(Users.PASSWORD);
-                    int col4 = c.getColumnIndex(Users.AGE);
+                    Cursor crsr = db.query(TABLE_USERS, null, null, null, null, null, null);
+                    int col1 = crsr.getColumnIndex(Users.KEY_ID);
+                    int col2 = crsr.getColumnIndex(Users.NAME);
+                    int col3 = crsr.getColumnIndex(Users.PASSWORD);
+                    int col4 = crsr.getColumnIndex(Users.AGE);
 
-                    c.moveToFirst();
-                    while (!c.isAfterLast()) {
-                        int key = c.getInt(col1);
-                        String name = c.getString(col2);
-                        String pass = c.getString(col3);
-                        int age = c.getInt(col4);
+                    crsr.moveToFirst();
+                    while (!crsr.isAfterLast()) {
+                        int key = crsr.getInt(col1);
+                        String name = crsr.getString(col2);
+                        String pass = crsr.getString(col3);
+                        int age = crsr.getInt(col4);
                         String tmp = "" + key + ", " + name + ", " + pass + ", " + age;
                         tbl.add(tmp);
-                        c.moveToNext();
+                        crsr.moveToNext();
                     }
                 } else {
-                    Cursor c = db.query(TABLE_GRADES, null, null, null, null, null, null);
-                    int col1 = c.getColumnIndex(Users.KEY_ID);
-                    int col2 = c.getColumnIndex(Grades.SUBJECT);
-                    int col3 = c.getColumnIndex(Grades.GRADE);
+                    Cursor crsr = db.query(TABLE_GRADES, null, null, null, null, null, null);
+                    int col1 = crsr.getColumnIndex(Users.KEY_ID);
+                    int col2 = crsr.getColumnIndex(Grades.SUBJECT);
+                    int col3 = crsr.getColumnIndex(Grades.GRADE);
 
-                    c.moveToFirst();
-                    while (!c.isAfterLast()) {
-                        int key = c.getInt(col1);
-                        String sub = c.getString(col2);
-                        int gra = c.getInt(col3);
+                    crsr.moveToFirst();
+                    while (!crsr.isAfterLast()) {
+                        int key = crsr.getInt(col1);
+                        String sub = crsr.getString(col2);
+                        int gra = crsr.getInt(col3);
                         String tmp = "" + key + ", " + sub + ", " + gra;
                         tbl.add(tmp);
-                        c.moveToNext();
+                        crsr.moveToNext();
                     }
                 }
                 db.close();
@@ -147,6 +147,9 @@ public class Watchtables extends AppCompatActivity  implements AdapterView.OnIte
         int id = item.getItemId();
         if (id==R.id.menuDataIn) {
             Intent t = new Intent(this, MainActivity.class);
+            startActivity(t);
+        } else if (id==R.id.menuUpdate) {
+            Intent t = new Intent(this, Update.class);
             startActivity(t);
         }
         return true;
