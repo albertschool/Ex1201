@@ -1,5 +1,6 @@
 package com.videxedge.ex1201;
 
+import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -29,7 +30,7 @@ public class Update extends AppCompatActivity implements AdapterView.OnItemClick
     HelperDB hlp;
     Cursor crsr;
     int col1, col2, col3, col4;
-    String strtmp;
+    String strtmp, olddata, newdata;
 
     public ArrayList<String> tblRec, tblFiled;
     public ArrayAdapter<String> adpRecord, adpField;
@@ -158,7 +159,8 @@ public class Update extends AppCompatActivity implements AdapterView.OnItemClick
         } else if (lVfield.equals(parent)) {
             if (table != -1 && record != -1) {
                 field = position;
-                eTdata.setHint(tblFiled.get(field));
+                olddata=tblFiled.get(field);
+                eTdata.setHint(olddata);
             } else {
                 Toast.makeText(this, "You have to choose a table & record first", Toast.LENGTH_LONG).show();
             }
@@ -166,6 +168,51 @@ public class Update extends AppCompatActivity implements AdapterView.OnItemClick
     }
 
     public void updatebtn(View view) {
+        newdata=eTdata.getText().toString();
+        ContentValues cv = new ContentValues();
+        db = hlp.getWritableDatabase();
+        if (table==0){
+            switch (field) {
+                case (0):
+                    cv.put(KEY_ID, Integer.parseInt(newdata));
+                    db.update(TABLE_USERS,cv,KEY_ID+"=?", new String[]{olddata});
+                    break;
+                case (1):
+                    cv.put(Users.NAME, newdata);
+                    db.update(TABLE_USERS,cv,Users.NAME+"=?", new String[]{olddata});
+                    break;
+                case (2):
+                    cv.put(Users.PASSWORD, newdata);
+                    db.update(TABLE_USERS,cv,Users.PASSWORD+"=?", new String[]{olddata});
+                    break;
+                case (3):
+                    cv.put(Users.AGE, Integer.parseInt(newdata));
+                    db.update(TABLE_USERS,cv,Users.AGE+"=?", new String[]{olddata});
+                    break;
+            }
+        } else {
+            switch (field) {
+                case (0):
+                    cv.put(KEY_ID, Integer.parseInt(newdata));
+                    db.update(TABLE_GRADES,cv,KEY_ID+"=?", new String[]{olddata});
+                    break;
+                case (1):
+                    cv.put(Grades.SUBJECT, newdata);
+                    db.update(TABLE_GRADES,cv,Grades.SUBJECT+"=?", new String[]{olddata});
+                    break;
+                case (2):
+                    cv.put(Grades.GRADE, Integer.parseInt(newdata));
+                    db.update(TABLE_GRADES,cv,Grades.GRADE+"=?", new String[]{olddata});
+                    break;
+            }
+        }
+        db.close();
+        record=-1;
+        tblRec.clear();
+        adpRecord.notifyDataSetChanged();
+        field=-1;
+        tblFiled.clear();
+        adpField.notifyDataSetChanged();
     }
 
     @Override
