@@ -62,11 +62,10 @@ public class Watchtables extends AppCompatActivity  implements AdapterView.OnIte
     @Override
     public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
         if (parent == lvtables) {
-            tbl = null;
+            tbl = new ArrayList<>();
             tablechoise = position + 1;
             if (tablechoise != 0) {
                 db = hlp.getWritableDatabase();
-                tbl = new ArrayList<>();
                 if (tablechoise == 1) {
                     Cursor crsr = db.query(TABLE_USERS, null, null, null, null, null, null);
                     int col1 = crsr.getColumnIndex(Users.KEY_ID);

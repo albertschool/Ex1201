@@ -1,18 +1,168 @@
 package com.videxedge.ex1201;
 
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AbsListView;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.EditText;
+import android.widget.ListView;
+import android.widget.Toast;
 
-public class Update extends AppCompatActivity {
+import java.util.ArrayList;
+
+import static com.videxedge.ex1201.Grades.TABLE_GRADES;
+import static com.videxedge.ex1201.Users.KEY_ID;
+import static com.videxedge.ex1201.Users.TABLE_USERS;
+
+public class Update extends AppCompatActivity implements AdapterView.OnItemClickListener {
+
+    ListView lVtable, lVrecord, lVfield;
+    EditText eTdata;
+    SQLiteDatabase db;
+    HelperDB hlp;
+    Cursor crsr;
+    int col1, col2, col3, col4;
+    String strtmp;
+
+    public ArrayList<String> tblRec, tblFiled;
+    public ArrayAdapter<String> adpRecord, adpField;
+    public int table, record, field;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_update);
+
+        lVtable=(ListView)findViewById(R.id.lVtable);
+        lVrecord=(ListView)findViewById(R.id.lVrecord);
+        lVfield=(ListView)findViewById(R.id.lVfield);
+        eTdata=(EditText)findViewById(R.id.eTdata);
+
+        hlp=new HelperDB(this);
+        db=hlp.getWritableDatabase();
+        db.close();
+
+        lVtable.setOnItemClickListener(this);
+        lVtable.setChoiceMode(AbsListView.CHOICE_MODE_SINGLE);
+        lVrecord.setOnItemClickListener(this);
+        lVrecord.setChoiceMode(AbsListView.CHOICE_MODE_SINGLE);
+        lVfield.setOnItemClickListener(this);
+        lVfield.setChoiceMode(AbsListView.CHOICE_MODE_SINGLE);
+
+        table=-1;
+        record=-1;
+
+        String[] tables={TABLE_USERS,TABLE_GRADES};
+        ArrayAdapter<String> adpTable=new ArrayAdapter<String>(this,R.layout.support_simple_spinner_dropdown_item,tables);
+        lVtable.setAdapter(adpTable);
+
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        if (lVtable.equals(parent)) {
+            table = position;
+            tblRec = new ArrayList<>();
+            db = hlp.getWritableDatabase();
+            switch (table) {
+                case (0): {
+                    crsr = db.query(TABLE_USERS, null, null, null, null, null, null);
+                    col1 = crsr.getColumnIndex(Users.KEY_ID);
+                    col2 = crsr.getColumnIndex(Users.NAME);
+                    col3 = crsr.getColumnIndex(Users.PASSWORD);
+                    col4 = crsr.getColumnIndex(Users.AGE);
+
+                    crsr.moveToFirst();
+                    while (!crsr.isAfterLast()) {
+                        int key = crsr.getInt(col1);
+                        String name = crsr.getString(col2);
+                        String pass = crsr.getString(col3);
+                        int age = crsr.getInt(col4);
+                        String tmp = "" + key + ", " + name + ", " + pass + ", " + age;
+                        tblRec.add(tmp);
+                        crsr.moveToNext();
+                    }
+                    break;
+                }
+                case (1): {
+                    crsr = db.query(TABLE_GRADES, null, null, null, null, null, null);
+                    col1 = crsr.getColumnIndex(Users.KEY_ID);
+                    col2 = crsr.getColumnIndex(Grades.SUBJECT);
+                    col3 = crsr.getColumnIndex(Grades.GRADE);
+
+                    crsr.moveToFirst();
+                    while (!crsr.isAfterLast()) {
+                        int key = crsr.getInt(col1);
+                        String sub = crsr.getString(col2);
+                        int gra = crsr.getInt(col3);
+                        String tmp = "" + key + ", " + sub + ", " + gra;
+                        tblRec.add(tmp);
+                        crsr.moveToNext();
+                    }
+                    break;
+                }
+            }
+            crsr.close();
+            db.close();
+            adpRecord= new ArrayAdapter<String>(this,R.layout.support_simple_spinner_dropdown_item,tblRec);
+            lVrecord.setAdapter(adpRecord);
+        } else if (lVrecord.equals(parent)) {
+            if (table != -1) {
+                record = position;
+                strtmp=tblRec.get(record);
+                strtmp=strtmp.substring(0,strtmp.indexOf(","));
+                tblFiled = new ArrayList<>();
+                db = hlp.getWritableDatabase();
+                switch (table) {
+                    case (0): {
+                        crsr = db.query(TABLE_USERS, null, KEY_ID+"=?", new String[]{strtmp}, null, null, null);
+                        crsr.moveToFirst();
+                        col1 = crsr.getColumnIndex(Users.KEY_ID);
+                        col2 = crsr.getColumnIndex(Users.NAME);
+                        col3 = crsr.getColumnIndex(Users.PASSWORD);
+                        col4 = crsr.getColumnIndex(Users.AGE);
+
+                        tblFiled.add(String.valueOf(crsr.getInt(col1)));
+                        tblFiled.add(crsr.getString(col2));
+                        tblFiled.add(crsr.getString(col3));
+                        tblFiled.add(String.valueOf(crsr.getInt(col4)));
+                        break;
+                    }
+                    case (1): {
+                        crsr = db.query(TABLE_GRADES, null, KEY_ID+"=?", new String[]{strtmp}, null, null, null);
+                        crsr.moveToFirst();
+                        col1 = crsr.getColumnIndex(Users.KEY_ID);
+                        col2 = crsr.getColumnIndex(Grades.SUBJECT);
+                        col3 = crsr.getColumnIndex(Grades.GRADE);
+
+                        tblFiled.add(String.valueOf(crsr.getInt(col1)));
+                        tblFiled.add(crsr.getString(col2));
+                        tblFiled.add(String.valueOf(crsr.getInt(col3)));
+                        break;
+                    }
+                }
+                crsr.close();
+                db.close();
+                adpField= new ArrayAdapter<String>(this,R.layout.support_simple_spinner_dropdown_item,tblFiled);
+                lVfield.setAdapter(adpField);
+            } else {
+                Toast.makeText(this, "You have to choose a table first", Toast.LENGTH_LONG).show();
+            }
+        } else if (lVfield.equals(parent)) {
+            if (table != -1 && record != -1) {
+                field = position;
+                eTdata.setHint(tblFiled.get(field));
+            } else {
+                Toast.makeText(this, "You have to choose a table & record first", Toast.LENGTH_LONG).show();
+            }
+        }
     }
 
     public void updatebtn(View view) {
