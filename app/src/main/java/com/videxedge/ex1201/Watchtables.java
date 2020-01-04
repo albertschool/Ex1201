@@ -26,7 +26,7 @@ public class Watchtables extends AppCompatActivity  implements AdapterView.OnIte
 
     SQLiteDatabase db;
     HelperDB hlp;
-    Cursor c;
+    Cursor crsr;
 
     ListView lvtables, lvrecords;
     ArrayList<String> tbl = new ArrayList<>();
@@ -67,7 +67,7 @@ public class Watchtables extends AppCompatActivity  implements AdapterView.OnIte
             if (tablechoise != 0) {
                 db = hlp.getWritableDatabase();
                 if (tablechoise == 1) {
-                    Cursor crsr = db.query(TABLE_USERS, null, null, null, null, null, null);
+                    crsr = db.query(TABLE_USERS, null, null, null, null, null, null);
                     int col1 = crsr.getColumnIndex(Users.KEY_ID);
                     int col2 = crsr.getColumnIndex(Users.NAME);
                     int col3 = crsr.getColumnIndex(Users.PASSWORD);
@@ -84,7 +84,7 @@ public class Watchtables extends AppCompatActivity  implements AdapterView.OnIte
                         crsr.moveToNext();
                     }
                 } else {
-                    Cursor crsr = db.query(TABLE_GRADES, null, null, null, null, null, null);
+                    crsr = db.query(TABLE_GRADES, null, null, null, null, null, null);
                     int col1 = crsr.getColumnIndex(Users.KEY_ID);
                     int col2 = crsr.getColumnIndex(Grades.SUBJECT);
                     int col3 = crsr.getColumnIndex(Grades.GRADE);
@@ -99,6 +99,7 @@ public class Watchtables extends AppCompatActivity  implements AdapterView.OnIte
                         crsr.moveToNext();
                     }
                 }
+                crsr.close();
                 db.close();
                 adp = new ArrayAdapter<String>(this, R.layout.support_simple_spinner_dropdown_item, tbl);
                 lvrecords.setAdapter(adp);
