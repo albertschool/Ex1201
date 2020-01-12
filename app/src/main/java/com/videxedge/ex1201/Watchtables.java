@@ -65,7 +65,7 @@ public class Watchtables extends AppCompatActivity  implements AdapterView.OnIte
             tbl = new ArrayList<>();
             tablechoise = position + 1;
             if (tablechoise != 0) {
-                db = hlp.getWritableDatabase();
+                db = hlp.getReadableDatabase();
                 if (tablechoise == 1) {
                     crsr = db.query(TABLE_USERS, null, null, null, null, null, null);
                     int col1 = crsr.getColumnIndex(Users.KEY_ID);
@@ -104,7 +104,7 @@ public class Watchtables extends AppCompatActivity  implements AdapterView.OnIte
                 adp = new ArrayAdapter<String>(this, R.layout.support_simple_spinner_dropdown_item, tbl);
                 lvrecords.setAdapter(adp);
             } else {
-                Toast.makeText(this, "Choose table", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Choose table first !", Toast.LENGTH_LONG).show();
             }
         } else {
             String strtmp = tbl.get(position);

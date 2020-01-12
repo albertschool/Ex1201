@@ -32,9 +32,9 @@ public class Update extends AppCompatActivity implements AdapterView.OnItemClick
     int col1, col2, col3, col4;
     String strtmp, olddata, newdata;
 
-    public ArrayList<String> tblRec, tblFiled;
-    public ArrayAdapter<String> adpRecord, adpField;
-    public int table, record, field;
+    ArrayList<String> tblRec, tblFiled;
+    ArrayAdapter<String> adpRecord, adpField;
+    int table, record, field;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

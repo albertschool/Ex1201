@@ -15,7 +15,7 @@
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="5"
+        android:layout_weight="8"
         android:orientation="vertical">
 
         <Space
@@ -29,8 +29,10 @@
             android:layout_weight="1"
             android:autoSizeTextType="uniform"
             android:gravity="center"
+            android:text="Update Data"
             android:textStyle="bold"
-            android:text="Update Data" />
+            app:autoSizeStepGranularity="2dp"
+            app:autoSizeTextType="uniform" />
 
         <Space
             android:layout_width="match_parent"

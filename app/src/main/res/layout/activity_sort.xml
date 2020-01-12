@@ -15,7 +15,7 @@
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="5"
+        android:layout_weight="8"
         android:orientation="vertical">
 
         <Space
@@ -29,8 +29,10 @@
             android:layout_weight="1"
             android:autoSizeTextType="uniform"
             android:gravity="center"
+            android:text="Sort Data"
             android:textStyle="bold"
-            android:text="Sort Data" />
+            app:autoSizeStepGranularity="2dp"
+            app:autoSizeTextType="uniform" />
 
         <Space
             android:layout_width="match_parent"
@@ -50,7 +52,7 @@
                 android:text="Table:" />
 
             <ListView
-                android:id="@+id/lVtable"
+                android:id="@+id/lVtbl"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="4" />
@@ -88,7 +90,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="3"
+            android:layout_weight="4.5"
             android:orientation="horizontal">
 
             <TextView
@@ -102,35 +104,6 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="4" />
-        </LinearLayout>
-
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="0.5" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:orientation="horizontal">
-
-            <Space
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1" />
-
-            <Button
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:onClick="sortbtn"
-                android:text="Sort" />
-
-            <Space
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1" />
         </LinearLayout>
 
         <Space
