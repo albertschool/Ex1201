@@ -71,7 +71,7 @@ public class Update extends AppCompatActivity implements AdapterView.OnItemClick
         if (lVtable.equals(parent)) {
             table = position;
             tblRec = new ArrayList<>();
-            db = hlp.getWritableDatabase();
+            db = hlp.getReadableDatabase();
             switch (table) {
                 case (0): {
                     crsr = db.query(TABLE_USERS, null, null, null, null, null, null);
@@ -120,7 +120,7 @@ public class Update extends AppCompatActivity implements AdapterView.OnItemClick
                 strtmp=tblRec.get(record);
                 strtmp=strtmp.substring(0,strtmp.indexOf(","));
                 tblFiled = new ArrayList<>();
-                db = hlp.getWritableDatabase();
+                db = hlp.getReadableDatabase();
                 switch (table) {
                     case (0): {
                         crsr = db.query(TABLE_USERS, null, KEY_ID+"=?", new String[]{strtmp}, null, null, null);
