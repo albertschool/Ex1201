@@ -224,13 +224,25 @@ public class Update extends AppCompatActivity implements AdapterView.OnItemClick
     @Override
     public boolean onOptionsItemSelected (MenuItem item) {
         int id = item.getItemId();
-        if (id==R.id.menuDataIn) {
-            Intent t = new Intent(this, MainActivity.class);
-            startActivity(t);
-        } else if (id==R.id.menuWatch) {
-            Intent t = new Intent(this, Watchtables.class);
-            startActivity(t);
+        switch (id) {
+            case (R.id.menuDataIn): {
+                Intent t = new Intent(this, MainActivity.class);
+                startActivity(t);
+                break;
+            }
+            case (R.id.menuWatch): {
+                Intent t = new Intent(this, Watchtables.class);
+                startActivity(t);
+                break;
+            }
+            case (R.id.menuSort): {
+                Intent t = new Intent(this, Sort.class);
+                startActivity(t);
+                break;
+            }
+            default:
+                break;
         }
-            return true;
+        return true;
     }
 }

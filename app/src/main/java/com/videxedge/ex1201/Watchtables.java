@@ -145,12 +145,24 @@ public class Watchtables extends AppCompatActivity  implements AdapterView.OnIte
     @Override
     public boolean onOptionsItemSelected (MenuItem item) {
         int id = item.getItemId();
-        if (id==R.id.menuDataIn) {
-            Intent t = new Intent(this, MainActivity.class);
-            startActivity(t);
-        } else if (id==R.id.menuUpdate) {
-            Intent t = new Intent(this, Update.class);
-            startActivity(t);
+        switch (id) {
+            case (R.id.menuDataIn): {
+                Intent t = new Intent(this, MainActivity.class);
+                startActivity(t);
+                break;
+            }
+            case (R.id.menuUpdate): {
+                Intent t = new Intent(this, Update.class);
+                startActivity(t);
+                break;
+            }
+            case (R.id.menuSort): {
+                Intent t = new Intent(this, Sort.class);
+                startActivity(t);
+                break;
+            }
+            default:
+                break;
         }
         return true;
     }

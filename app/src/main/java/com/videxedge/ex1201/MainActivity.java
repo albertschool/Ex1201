@@ -9,6 +9,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -78,12 +79,24 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected (MenuItem item) {
         int id = item.getItemId();
-        if (id==R.id.menuWatch) {
-            Intent t = new Intent(this, Watchtables.class);
-            startActivity(t);
-        } else if (id==R.id.menuUpdate) {
-            Intent t = new Intent(this, Update.class);
-            startActivity(t);
+        switch (id) {
+            case (R.id.menuWatch): {
+                Intent t = new Intent(this, Watchtables.class);
+                startActivity(t);
+                break;
+            }
+            case (R.id.menuUpdate): {
+                Intent t = new Intent(this, Update.class);
+                startActivity(t);
+                break;
+            }
+            case (R.id.menuSort): {
+                Intent t = new Intent(this, Sort.class);
+                startActivity(t);
+                break;
+            }
+            default:
+                break;
         }
         return true;
     }
