@@ -33,6 +33,14 @@ public class Sort extends AppCompatActivity implements AdapterView.OnItemClickLi
     String[] tables, fields;
     String tbl2sort;
 
+    String[] columns = null;
+    String selection = null;
+    String[] selectionArgs = null;
+    String groupBy = null;
+    String having = null;
+    String orderBy = null;
+    String limit = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,8 +84,9 @@ public class Sort extends AppCompatActivity implements AdapterView.OnItemClickLi
             if (table != -1) {
                 tbl = new ArrayList<>();
                 db=hlp.getReadableDatabase();
+                orderBy=fields[position];
                 if (table == 0) {
-                    crsr=db.query(TABLE_USERS,null,null,null,null,null,fields[position]);
+                    crsr=db.query(TABLE_USERS, columns, selection, selectionArgs, groupBy, having, orderBy, limit);
                     int col1 = crsr.getColumnIndex(Users.KEY_ID);
                     int col2 = crsr.getColumnIndex(Users.NAME);
                     int col3 = crsr.getColumnIndex(Users.PASSWORD);
@@ -94,7 +103,7 @@ public class Sort extends AppCompatActivity implements AdapterView.OnItemClickLi
                         crsr.moveToNext();
                     }
                 } else {
-                    crsr = db.query(TABLE_GRADES, null, null, null, null, null,fields[position]);
+                    crsr=db.query(TABLE_GRADES, columns, selection, selectionArgs, groupBy, having, orderBy, limit);
                     int col1 = crsr.getColumnIndex(Users.KEY_ID);
                     int col2 = crsr.getColumnIndex(Grades.SUBJECT);
                     int col3 = crsr.getColumnIndex(Grades.GRADE);
