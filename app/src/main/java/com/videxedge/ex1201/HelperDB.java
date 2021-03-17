@@ -14,19 +14,29 @@ import static com.videxedge.ex1201.Users.PASSWORD;
 import static com.videxedge.ex1201.Users.TABLE_USERS;
 
 /**
- * Created by Albert on 16/01/2017.
+ * The type HelperDB
  */
-
 public class HelperDB extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "dbexam.db";
     private static final int DATABASE_VERSION = 1;
     String strCreate, strDelete;
 
+    /**
+     * Instantiates a new HelperDB
+     *
+     * @param context the context
+     */
     public HelperDB(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
+    /**
+     * onCreate
+     * <p>
+     * This method create the tables in database
+     * @param db the SQLite database
+     */
     @Override
     public void onCreate(SQLiteDatabase db) {
 
@@ -46,6 +56,14 @@ public class HelperDB extends SQLiteOpenHelper {
         db.execSQL(strCreate);
     }
 
+    /**
+     * onUpgrade
+     * <p>
+     * This method upgrade the database
+     * @param db the SQLite database
+     * @param oldVer the old version code
+     * @param newVer the new version code
+     */
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVer, int newVer) {
 

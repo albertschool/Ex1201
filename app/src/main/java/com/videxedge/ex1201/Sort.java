@@ -19,6 +19,11 @@ import java.util.ArrayList;
 import static com.videxedge.ex1201.Grades.TABLE_GRADES;
 import static com.videxedge.ex1201.Users.TABLE_USERS;
 
+/**
+ * The activity Sort
+ * <p>
+ * in this activity the user can view the tables sorted by desired field
+ */
 public class Sort extends AppCompatActivity implements AdapterView.OnItemClickListener {
 
     ListView lVtbl, lVfld2sort, lVsorted;
@@ -67,10 +72,20 @@ public class Sort extends AppCompatActivity implements AdapterView.OnItemClickLi
 
     }
 
+    /**
+     * onItemClick
+     * <p>
+     * This method react to the selected option in the listViews
+     * @param parent the listView selected
+     * @param view the view
+     * @param position the position selected
+     * @param id the id selected
+     */
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         if (lVtbl.equals(parent)) {
             table = position;
+            // table to sort
             if (table==0) {
                 tbl2sort= TABLE_USERS;
                 fields= new String[]{Users.KEY_ID, Users.NAME, Users.PASSWORD, Users.AGE};
@@ -85,6 +100,7 @@ public class Sort extends AppCompatActivity implements AdapterView.OnItemClickLi
                 tbl = new ArrayList<>();
                 db=hlp.getReadableDatabase();
                 orderBy=fields[position];
+                // read the data sorted
                 if (table == 0) {
                     crsr=db.query(TABLE_USERS, columns, selection, selectionArgs, groupBy, having, orderBy, limit);
                     int col1 = crsr.getColumnIndex(Users.KEY_ID);
@@ -120,6 +136,7 @@ public class Sort extends AppCompatActivity implements AdapterView.OnItemClickLi
                 }
                 crsr.close();
                 db.close();
+                // display the data
                 adpData = new ArrayAdapter<String>(this, R.layout.support_simple_spinner_dropdown_item, tbl);
                 lVsorted.setAdapter(adpData);
             } else {
@@ -128,12 +145,24 @@ public class Sort extends AppCompatActivity implements AdapterView.OnItemClickLi
         }
     }
 
+    /**
+     * onCreateOptionsMenu
+     * <p>
+     * This method create the menu options
+     * @param menu the menu
+     */
     @Override
     public boolean onCreateOptionsMenu (Menu menu) {
         getMenuInflater().inflate(R.menu.main,menu);
         return true;
     }
 
+    /**
+     * onOptionsItemSelected
+     * <p>
+     * This method react to the menu option selected
+     * @param item the menu item selected
+     */
     @Override
     public boolean onOptionsItemSelected (MenuItem item) {
         int id = item.getItemId();

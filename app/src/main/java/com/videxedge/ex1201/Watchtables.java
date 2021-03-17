@@ -22,6 +22,11 @@ import static com.videxedge.ex1201.Grades.TABLE_GRADES;
 import static com.videxedge.ex1201.Users.KEY_ID;
 import static com.videxedge.ex1201.Users.TABLE_USERS;
 
+/**
+ * The activity Watchtables
+ * <p>
+ * in this activity the user can watch & delete records in the tables
+ */
 public class Watchtables extends AppCompatActivity  implements AdapterView.OnItemClickListener {
 
     SQLiteDatabase db;
@@ -59,13 +64,24 @@ public class Watchtables extends AppCompatActivity  implements AdapterView.OnIte
 
     }
 
+    /**
+     * onItemClick
+     * <p>
+     * This method react to the selected option in the listViews
+     * @param parent the listView selected
+     * @param view the view
+     * @param position the position selected
+     * @param id the id selected
+     */
     @Override
     public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
         if (parent == lvtables) {
             tbl = new ArrayList<>();
             tablechoise = position + 1;
+            // table to display
             if (tablechoise != 0) {
                 db = hlp.getReadableDatabase();
+                // read the table
                 if (tablechoise == 1) {
                     crsr = db.query(TABLE_USERS, null, null, null, null, null, null);
                     int col1 = crsr.getColumnIndex(Users.KEY_ID);
@@ -101,6 +117,7 @@ public class Watchtables extends AppCompatActivity  implements AdapterView.OnIte
                 }
                 crsr.close();
                 db.close();
+                // display the table
                 adp = new ArrayAdapter<String>(this, R.layout.support_simple_spinner_dropdown_item, tbl);
                 lvrecords.setAdapter(adp);
             } else {
@@ -108,6 +125,7 @@ public class Watchtables extends AppCompatActivity  implements AdapterView.OnIte
             }
         } else {
             String strtmp = tbl.get(position);
+            // alert to ensure delete of record & delete
             adb = new AlertDialog.Builder(this);
             adb.setTitle("Are you sure ?");
             adb.setMessage("Are you sure you want to delete " + strtmp);
@@ -136,12 +154,24 @@ public class Watchtables extends AppCompatActivity  implements AdapterView.OnIte
         }
     }
 
+    /**
+     * onCreateOptionsMenu
+     * <p>
+     * This method create the menu options
+     * @param menu the menu
+     */
     @Override
     public boolean onCreateOptionsMenu (Menu menu) {
         getMenuInflater().inflate(R.menu.main,menu);
         return true;
     }
 
+    /**
+     * onOptionsItemSelected
+     * <p>
+     * This method react to the menu option selected
+     * @param item the menu item selected
+     */
     @Override
     public boolean onOptionsItemSelected (MenuItem item) {
         int id = item.getItemId();

@@ -22,6 +22,11 @@ import static com.videxedge.ex1201.Grades.TABLE_GRADES;
 import static com.videxedge.ex1201.Users.KEY_ID;
 import static com.videxedge.ex1201.Users.TABLE_USERS;
 
+/**
+ * The activity Update
+ * <p>
+ * in this activity the user can update data of records in the tables
+ */
 public class Update extends AppCompatActivity implements AdapterView.OnItemClickListener {
 
     ListView lVtable, lVrecord, lVfield;
@@ -66,12 +71,23 @@ public class Update extends AppCompatActivity implements AdapterView.OnItemClick
 
     }
 
+    /**
+     * onItemClick
+     * <p>
+     * This method react to the selected option in the listViews
+     * @param parent the listView selected
+     * @param view the view
+     * @param position the position selected
+     * @param id the id selected
+     */
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         if (lVtable.equals(parent)) {
             table = position;
+            // table to update
             tblRec = new ArrayList<>();
             db = hlp.getReadableDatabase();
+            // read the data
             switch (table) {
                 case (0): {
                     crsr = db.query(TABLE_USERS, null, null, null, null, null, null);
@@ -112,15 +128,18 @@ public class Update extends AppCompatActivity implements AdapterView.OnItemClick
             }
             crsr.close();
             db.close();
+            // display the records
             adpRecord= new ArrayAdapter<String>(this,R.layout.support_simple_spinner_dropdown_item,tblRec);
             lVrecord.setAdapter(adpRecord);
         } else if (lVrecord.equals(parent)) {
             if (table != -1) {
                 record = position;
+                // record to update
                 strtmp=tblRec.get(record);
                 strtmp=strtmp.substring(0,strtmp.indexOf(","));
                 tblFiled = new ArrayList<>();
                 db = hlp.getReadableDatabase();
+                // read the data
                 switch (table) {
                     case (0): {
                         crsr = db.query(TABLE_USERS, null, KEY_ID+"=?", new String[]{strtmp}, null, null, null);
@@ -151,6 +170,7 @@ public class Update extends AppCompatActivity implements AdapterView.OnItemClick
                 }
                 crsr.close();
                 db.close();
+                // display the data
                 adpField= new ArrayAdapter<String>(this,R.layout.support_simple_spinner_dropdown_item,tblFiled);
                 lVfield.setAdapter(adpField);
             } else {
@@ -167,6 +187,12 @@ public class Update extends AppCompatActivity implements AdapterView.OnItemClick
         }
     }
 
+    /**
+     * updatebtn
+     * <p>
+     * This method update the data in the selected field of table
+     * @param view the view
+     */
     public void updatebtn(View view) {
         newdata=eTdata.getText().toString();
         ContentValues cv = new ContentValues();
@@ -215,12 +241,24 @@ public class Update extends AppCompatActivity implements AdapterView.OnItemClick
         adpField.notifyDataSetChanged();
     }
 
+    /**
+     * onCreateOptionsMenu
+     * <p>
+     * This method create the menu options
+     * @param menu the menu
+     */
     @Override
     public boolean onCreateOptionsMenu (Menu menu) {
         getMenuInflater().inflate(R.menu.main,menu);
         return true;
     }
 
+    /**
+     * onOptionsItemSelected
+     * <p>
+     * This method react to the menu option selected
+     * @param item the menu item selected
+     */
     @Override
     public boolean onOptionsItemSelected (MenuItem item) {
         int id = item.getItemId();
