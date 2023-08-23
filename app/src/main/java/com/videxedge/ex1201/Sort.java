@@ -26,17 +26,16 @@ import static com.videxedge.ex1201.Users.TABLE_USERS;
  */
 public class Sort extends AppCompatActivity implements AdapterView.OnItemClickListener {
 
-    ListView lVtbl, lVfld2sort, lVsorted;
-    SQLiteDatabase db;
-    HelperDB hlp;
-    Cursor crsr;
+    private ListView lVtbl, lVfld2sort, lVsorted;
+    private SQLiteDatabase db;
+    private HelperDB hlp;
+    private Cursor crsr;
 
-    ArrayList<String> tblRec, tblFiled;
-    ArrayList<String> tbl = new ArrayList<>();
-    ArrayAdapter<String> adpTables, adpFields, adpData;
-    int table;
-    String[] tables, fields;
-    String tbl2sort;
+    private ArrayList<String> tbl = new ArrayList<>();
+    private ArrayAdapter<String> adpData;
+    private int table;
+    private String[] tables, fields;
+    private String tbl2sort;
 
     String[] columns = null;
     String selection = null;
@@ -51,6 +50,21 @@ public class Sort extends AppCompatActivity implements AdapterView.OnItemClickLi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sort);
 
+        initAll();
+
+        table=-1;
+
+        tables= new String[]{TABLE_USERS, TABLE_GRADES};
+        ArrayAdapter<String> adpTables=new ArrayAdapter<String>(this,R.layout.support_simple_spinner_dropdown_item,tables);
+        lVtbl.setAdapter(adpTables);
+    }
+
+    /**
+     * initAll
+     * <p>
+     * This method init the views& database
+     */
+    private void initAll() {
         lVtbl=(ListView)findViewById(R.id.lVtbl);
         lVfld2sort=(ListView)findViewById(R.id.lVfld2sort);
         lVsorted=(ListView)findViewById(R.id.lVsorted);
@@ -63,13 +77,6 @@ public class Sort extends AppCompatActivity implements AdapterView.OnItemClickLi
         lVtbl.setChoiceMode(AbsListView.CHOICE_MODE_SINGLE);
         lVfld2sort.setOnItemClickListener(this);
         lVfld2sort.setChoiceMode(AbsListView.CHOICE_MODE_SINGLE);
-
-        table=-1;
-
-        tables= new String[]{TABLE_USERS, TABLE_GRADES};
-        ArrayAdapter<String> adpTables=new ArrayAdapter<String>(this,R.layout.support_simple_spinner_dropdown_item,tables);
-        lVtbl.setAdapter(adpTables);
-
     }
 
     /**
@@ -103,32 +110,32 @@ public class Sort extends AppCompatActivity implements AdapterView.OnItemClickLi
                 // read the data sorted
                 if (table == 0) {
                     crsr=db.query(TABLE_USERS, columns, selection, selectionArgs, groupBy, having, orderBy, limit);
-                    int col1 = crsr.getColumnIndex(Users.KEY_ID);
-                    int col2 = crsr.getColumnIndex(Users.NAME);
-                    int col3 = crsr.getColumnIndex(Users.PASSWORD);
-                    int col4 = crsr.getColumnIndex(Users.AGE);
+                    int colKEY_ID = crsr.getColumnIndex(Users.KEY_ID);
+                    int colNAME = crsr.getColumnIndex(Users.NAME);
+                    int colPASSWORD = crsr.getColumnIndex(Users.PASSWORD);
+                    int colAGE = crsr.getColumnIndex(Users.AGE);
 
                     crsr.moveToFirst();
                     while (!crsr.isAfterLast()) {
-                        int key = crsr.getInt(col1);
-                        String name = crsr.getString(col2);
-                        String pass = crsr.getString(col3);
-                        int age = crsr.getInt(col4);
+                        int key = crsr.getInt(colKEY_ID);
+                        String name = crsr.getString(colNAME);
+                        String pass = crsr.getString(colPASSWORD);
+                        int age = crsr.getInt(colAGE);
                         String tmp = "" + key + ", " + name + ", " + pass + ", " + age;
                         tbl.add(tmp);
                         crsr.moveToNext();
                     }
                 } else {
                     crsr=db.query(TABLE_GRADES, columns, selection, selectionArgs, groupBy, having, orderBy, limit);
-                    int col1 = crsr.getColumnIndex(Users.KEY_ID);
-                    int col2 = crsr.getColumnIndex(Grades.SUBJECT);
-                    int col3 = crsr.getColumnIndex(Grades.GRADE);
+                    int colKEY_ID = crsr.getColumnIndex(Users.KEY_ID);
+                    int colSUBJECT = crsr.getColumnIndex(Grades.SUBJECT);
+                    int colGRADE = crsr.getColumnIndex(Grades.GRADE);
 
                     crsr.moveToFirst();
                     while (!crsr.isAfterLast()) {
-                        int key = crsr.getInt(col1);
-                        String sub = crsr.getString(col2);
-                        int gra = crsr.getInt(col3);
+                        int key = crsr.getInt(colKEY_ID);
+                        String sub = crsr.getString(colSUBJECT);
+                        int gra = crsr.getInt(colGRADE);
                         String tmp = "" + key + ", " + sub + ", " + gra;
                         tbl.add(tmp);
                         crsr.moveToNext();
@@ -154,7 +161,7 @@ public class Sort extends AppCompatActivity implements AdapterView.OnItemClickLi
     @Override
     public boolean onCreateOptionsMenu (Menu menu) {
         getMenuInflater().inflate(R.menu.main,menu);
-        return true;
+        return super.onCreateOptionsMenu(menu);
     }
 
     /**
@@ -185,6 +192,6 @@ public class Sort extends AppCompatActivity implements AdapterView.OnItemClickLi
             default:
                 break;
         }
-        return true;
+        return super.onOptionsItemSelected(item);
     }
 }

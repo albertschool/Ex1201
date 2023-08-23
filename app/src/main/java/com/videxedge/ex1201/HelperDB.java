@@ -20,7 +20,7 @@ public class HelperDB extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "dbexam.db";
     private static final int DATABASE_VERSION = 1;
-    String strCreate, strDelete;
+    private String strCreate, strDelete;
 
     /**
      * Instantiates a new HelperDB

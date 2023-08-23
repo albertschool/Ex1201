@@ -29,23 +29,38 @@ import static com.videxedge.ex1201.Users.TABLE_USERS;
  */
 public class Update extends AppCompatActivity implements AdapterView.OnItemClickListener {
 
-    ListView lVtable, lVrecord, lVfield;
-    EditText eTdata;
-    SQLiteDatabase db;
-    HelperDB hlp;
-    Cursor crsr;
-    int col1, col2, col3, col4;
-    String strtmp, olddata, newdata;
+    private ListView lVtable, lVrecord, lVfield;
+    private EditText eTdata;
+    private SQLiteDatabase db;
+    private HelperDB hlp;
+    private Cursor crsr;
+    private String strtmp, olddata, newdata;
 
-    ArrayList<String> tblRec, tblFiled;
-    ArrayAdapter<String> adpRecord, adpField;
-    int table, record, field;
+    private ArrayList<String> tblRec, tblFiled;
+    private ArrayAdapter<String> adpRecord, adpField;
+    private int table, record, field;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_update);
 
+        initAll();
+
+        table=-1;
+        record=-1;
+
+        String[] tables={TABLE_USERS,TABLE_GRADES};
+        ArrayAdapter<String> adpTable=new ArrayAdapter<String>(this,R.layout.support_simple_spinner_dropdown_item,tables);
+        lVtable.setAdapter(adpTable);
+    }
+
+    /**
+     * initAll
+     * <p>
+     * This method init the views& database
+     */
+    private void initAll() {
         lVtable=(ListView)findViewById(R.id.lVtable);
         lVrecord=(ListView)findViewById(R.id.lVrecord);
         lVfield=(ListView)findViewById(R.id.lVfield);
@@ -61,14 +76,6 @@ public class Update extends AppCompatActivity implements AdapterView.OnItemClick
         lVrecord.setChoiceMode(AbsListView.CHOICE_MODE_SINGLE);
         lVfield.setOnItemClickListener(this);
         lVfield.setChoiceMode(AbsListView.CHOICE_MODE_SINGLE);
-
-        table=-1;
-        record=-1;
-
-        String[] tables={TABLE_USERS,TABLE_GRADES};
-        ArrayAdapter<String> adpTable=new ArrayAdapter<String>(this,R.layout.support_simple_spinner_dropdown_item,tables);
-        lVtable.setAdapter(adpTable);
-
     }
 
     /**
@@ -91,17 +98,17 @@ public class Update extends AppCompatActivity implements AdapterView.OnItemClick
             switch (table) {
                 case (0): {
                     crsr = db.query(TABLE_USERS, null, null, null, null, null, null);
-                    col1 = crsr.getColumnIndex(Users.KEY_ID);
-                    col2 = crsr.getColumnIndex(Users.NAME);
-                    col3 = crsr.getColumnIndex(Users.PASSWORD);
-                    col4 = crsr.getColumnIndex(Users.AGE);
+                    int colKEY_ID = crsr.getColumnIndex(Users.KEY_ID);
+                    int colNAME = crsr.getColumnIndex(Users.NAME);
+                    int colPASSWORD = crsr.getColumnIndex(Users.PASSWORD);
+                    int colAGE = crsr.getColumnIndex(Users.AGE);
 
                     crsr.moveToFirst();
                     while (!crsr.isAfterLast()) {
-                        int key = crsr.getInt(col1);
-                        String name = crsr.getString(col2);
-                        String pass = crsr.getString(col3);
-                        int age = crsr.getInt(col4);
+                        int key = crsr.getInt(colKEY_ID);
+                        String name = crsr.getString(colNAME);
+                        String pass = crsr.getString(colPASSWORD);
+                        int age = crsr.getInt(colAGE);
                         String tmp = "" + key + ", " + name + ", " + pass + ", " + age;
                         tblRec.add(tmp);
                         crsr.moveToNext();
@@ -110,15 +117,15 @@ public class Update extends AppCompatActivity implements AdapterView.OnItemClick
                 }
                 case (1): {
                     crsr = db.query(TABLE_GRADES, null, null, null, null, null, null);
-                    col1 = crsr.getColumnIndex(Users.KEY_ID);
-                    col2 = crsr.getColumnIndex(Grades.SUBJECT);
-                    col3 = crsr.getColumnIndex(Grades.GRADE);
+                    int colKEY_ID = crsr.getColumnIndex(Users.KEY_ID);
+                    int colSUBJECT = crsr.getColumnIndex(Grades.SUBJECT);
+                    int colGRADE = crsr.getColumnIndex(Grades.GRADE);
 
                     crsr.moveToFirst();
                     while (!crsr.isAfterLast()) {
-                        int key = crsr.getInt(col1);
-                        String sub = crsr.getString(col2);
-                        int gra = crsr.getInt(col3);
+                        int key = crsr.getInt(colKEY_ID);
+                        String sub = crsr.getString(colSUBJECT);
+                        int gra = crsr.getInt(colGRADE);
                         String tmp = "" + key + ", " + sub + ", " + gra;
                         tblRec.add(tmp);
                         crsr.moveToNext();
@@ -144,27 +151,27 @@ public class Update extends AppCompatActivity implements AdapterView.OnItemClick
                     case (0): {
                         crsr = db.query(TABLE_USERS, null, KEY_ID+"=?", new String[]{strtmp}, null, null, null);
                         crsr.moveToFirst();
-                        col1 = crsr.getColumnIndex(Users.KEY_ID);
-                        col2 = crsr.getColumnIndex(Users.NAME);
-                        col3 = crsr.getColumnIndex(Users.PASSWORD);
-                        col4 = crsr.getColumnIndex(Users.AGE);
+                        int colKEY_ID = crsr.getColumnIndex(Users.KEY_ID);
+                        int colNAME = crsr.getColumnIndex(Users.NAME);
+                        int colPASSWORD = crsr.getColumnIndex(Users.PASSWORD);
+                        int colAGE = crsr.getColumnIndex(Users.AGE);
 
-                        tblFiled.add(String.valueOf(crsr.getInt(col1)));
-                        tblFiled.add(crsr.getString(col2));
-                        tblFiled.add(crsr.getString(col3));
-                        tblFiled.add(String.valueOf(crsr.getInt(col4)));
+                        tblFiled.add(String.valueOf(crsr.getInt(colKEY_ID)));
+                        tblFiled.add(crsr.getString(colNAME));
+                        tblFiled.add(crsr.getString(colPASSWORD));
+                        tblFiled.add(String.valueOf(crsr.getInt(colAGE)));
                         break;
                     }
                     case (1): {
                         crsr = db.query(TABLE_GRADES, null, KEY_ID+"=?", new String[]{strtmp}, null, null, null);
                         crsr.moveToFirst();
-                        col1 = crsr.getColumnIndex(Users.KEY_ID);
-                        col2 = crsr.getColumnIndex(Grades.SUBJECT);
-                        col3 = crsr.getColumnIndex(Grades.GRADE);
+                        int colKEY_ID = crsr.getColumnIndex(Users.KEY_ID);
+                        int colSUBJECT = crsr.getColumnIndex(Grades.SUBJECT);
+                        int colGRADE = crsr.getColumnIndex(Grades.GRADE);
 
-                        tblFiled.add(String.valueOf(crsr.getInt(col1)));
-                        tblFiled.add(crsr.getString(col2));
-                        tblFiled.add(String.valueOf(crsr.getInt(col3)));
+                        tblFiled.add(String.valueOf(crsr.getInt(colKEY_ID)));
+                        tblFiled.add(crsr.getString(colSUBJECT));
+                        tblFiled.add(String.valueOf(crsr.getInt(colGRADE)));
                         break;
                     }
                 }
@@ -250,7 +257,7 @@ public class Update extends AppCompatActivity implements AdapterView.OnItemClick
     @Override
     public boolean onCreateOptionsMenu (Menu menu) {
         getMenuInflater().inflate(R.menu.main,menu);
-        return true;
+        return super.onCreateOptionsMenu(menu);
     }
 
     /**
@@ -281,6 +288,6 @@ public class Update extends AppCompatActivity implements AdapterView.OnItemClick
             default:
                 break;
         }
-        return true;
+        return super.onOptionsItemSelected (item);
     }
 }

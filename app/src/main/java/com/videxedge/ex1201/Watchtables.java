@@ -29,15 +29,15 @@ import static com.videxedge.ex1201.Users.TABLE_USERS;
  */
 public class Watchtables extends AppCompatActivity  implements AdapterView.OnItemClickListener {
 
-    SQLiteDatabase db;
-    HelperDB hlp;
-    Cursor crsr;
+    private SQLiteDatabase db;
+    private HelperDB hlp;
+    private Cursor crsr;
 
-    ListView lvtables, lvrecords;
-    ArrayList<String> tbl = new ArrayList<>();
-    ArrayAdapter adp;
-    int tablechoise;
-    AlertDialog.Builder adb;
+    private ListView lvtables, lvrecords;
+    private ArrayList<String> tbl = new ArrayList<>();
+    private ArrayAdapter adp;
+    private int tablechoise;
+    private AlertDialog.Builder adb;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

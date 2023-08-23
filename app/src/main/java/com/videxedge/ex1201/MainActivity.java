@@ -19,15 +19,24 @@ import android.widget.Toast;
  */
 public class MainActivity extends AppCompatActivity {
 
-    SQLiteDatabase db;
-    HelperDB hlp;
-    EditText eTname, eTpass, eTage, eTsub, eTgrade;
+    private SQLiteDatabase db;
+    private HelperDB hlp;
+    private EditText eTname, eTpass, eTage, eTsub, eTgrade;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        initAll();
+    }
+
+    /**
+     * initAll
+     * <p>
+     * This method init the views& database
+     */
+    private void initAll() {
         eTname = (EditText) findViewById(R.id.eTname);
         eTpass = (EditText) findViewById(R.id.eTpass);
         eTage = (EditText) findViewById(R.id.eTage);
@@ -105,7 +114,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu (Menu menu) {
         getMenuInflater().inflate(R.menu.main,menu);
-        return true;
+        return super.onCreateOptionsMenu(menu);
     }
 
     /**
@@ -136,6 +145,6 @@ public class MainActivity extends AppCompatActivity {
             default:
                 break;
         }
-        return true;
+        return super.onOptionsItemSelected(item);
     }
 }
