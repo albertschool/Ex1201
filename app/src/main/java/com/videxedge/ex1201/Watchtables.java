@@ -84,32 +84,32 @@ public class Watchtables extends AppCompatActivity  implements AdapterView.OnIte
                 // read the table
                 if (tablechoise == 1) {
                     crsr = db.query(TABLE_USERS, null, null, null, null, null, null);
-                    int col1 = crsr.getColumnIndex(Users.KEY_ID);
-                    int col2 = crsr.getColumnIndex(Users.NAME);
-                    int col3 = crsr.getColumnIndex(Users.PASSWORD);
-                    int col4 = crsr.getColumnIndex(Users.AGE);
+                    int colKEY_ID = crsr.getColumnIndex(Users.KEY_ID);
+                    int colNAME = crsr.getColumnIndex(Users.NAME);
+                    int colPASSWORD = crsr.getColumnIndex(Users.PASSWORD);
+                    int colAGE = crsr.getColumnIndex(Users.AGE);
 
                     crsr.moveToFirst();
                     while (!crsr.isAfterLast()) {
-                        int key = crsr.getInt(col1);
-                        String name = crsr.getString(col2);
-                        String pass = crsr.getString(col3);
-                        int age = crsr.getInt(col4);
+                        int key = crsr.getInt(colKEY_ID);
+                        String name = crsr.getString(colNAME);
+                        String pass = crsr.getString(colPASSWORD);
+                        int age = crsr.getInt(colAGE);
                         String tmp = "" + key + ", " + name + ", " + pass + ", " + age;
                         tbl.add(tmp);
                         crsr.moveToNext();
                     }
                 } else {
                     crsr = db.query(TABLE_GRADES, null, null, null, null, null, null);
-                    int col1 = crsr.getColumnIndex(Users.KEY_ID);
-                    int col2 = crsr.getColumnIndex(Grades.SUBJECT);
-                    int col3 = crsr.getColumnIndex(Grades.GRADE);
+                    int colKEY_ID = crsr.getColumnIndex(Users.KEY_ID);
+                    int colSUBJECT = crsr.getColumnIndex(Grades.SUBJECT);
+                    int colGRADE = crsr.getColumnIndex(Grades.GRADE);
 
                     crsr.moveToFirst();
                     while (!crsr.isAfterLast()) {
-                        int key = crsr.getInt(col1);
-                        String sub = crsr.getString(col2);
-                        int gra = crsr.getInt(col3);
+                        int key = crsr.getInt(colKEY_ID);
+                        String sub = crsr.getString(colSUBJECT);
+                        int gra = crsr.getInt(colGRADE);
                         String tmp = "" + key + ", " + sub + ", " + gra;
                         tbl.add(tmp);
                         crsr.moveToNext();
@@ -163,7 +163,7 @@ public class Watchtables extends AppCompatActivity  implements AdapterView.OnIte
     @Override
     public boolean onCreateOptionsMenu (Menu menu) {
         getMenuInflater().inflate(R.menu.main,menu);
-        return true;
+        return super.onCreateOptionsMenu(menu);
     }
 
     /**
@@ -194,6 +194,6 @@ public class Watchtables extends AppCompatActivity  implements AdapterView.OnIte
             default:
                 break;
         }
-        return true;
+        return super.onOptionsItemSelected(item);
     }
 }
