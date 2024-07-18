@@ -1,15 +1,22 @@
 package com.videxedge.ex1201;
 
+import static com.videxedge.ex1201.Users.TABLE_USERS;
+
 import android.content.ContentValues;
 import android.content.Intent;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.Toast;
+
+import java.util.ArrayList;
 /**
  * Demo app to use SQLite
  * Created by Albert on 16/01/2017.
@@ -19,9 +26,15 @@ import android.widget.Toast;
  */
 public class MainActivity extends AppCompatActivity {
 
+    private EditText eTname, eTpass, eTage, eTsub, eTgrade;
+    private Spinner spinKey_id;
+
     private SQLiteDatabase db;
     private HelperDB hlp;
-    private EditText eTname, eTpass, eTage, eTsub, eTgrade;
+    private ArrayList<String> namesList;
+    private ArrayList<User> users;
+    private ArrayAdapter adp;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,12 +53,36 @@ public class MainActivity extends AppCompatActivity {
         eTname = (EditText) findViewById(R.id.eTname);
         eTpass = (EditText) findViewById(R.id.eTpass);
         eTage = (EditText) findViewById(R.id.eTage);
+        spinKey_id = (Spinner) findViewById(R.id.spinKey_id);
         eTsub = (EditText) findViewById(R.id.eTsub);
         eTgrade = (EditText) findViewById(R.id.eTgrade);
 
         hlp = new HelperDB(this);
         db = hlp.getWritableDatabase();
         db.close();
+
+        users = new ArrayList<>();
+        namesList = new ArrayList<>();
+        namesList.add("Choose a user:");
+        db=hlp.getReadableDatabase();
+        Cursor crsr=db.query(TABLE_USERS, null, null, null, null, null, null);
+        int colKEY_ID = crsr.getColumnIndex(Users.KEY_ID);
+        int colNAME = crsr.getColumnIndex(Users.NAME);
+        int colPASSWORD = crsr.getColumnIndex(Users.PASSWORD);
+        int colAGE = crsr.getColumnIndex(Users.AGE);
+
+        User tmpUser = new User();
+        crsr.moveToFirst();
+        while (!crsr.isAfterLast()) {
+            tmpUser.setKey_id(crsr.getInt(colKEY_ID));
+            tmpUser.setName(crsr.getString(colNAME));
+            tmpUser.setPassword(crsr.getString(colPASSWORD));
+            tmpUser.setAge(crsr.getInt(colAGE));
+            users.add(tmpUser);
+            namesList.add(tmpUser.getName());
+            crsr.moveToNext();
+        }
+        // TODO: init the spinner and show the data
     }
 
     /**
