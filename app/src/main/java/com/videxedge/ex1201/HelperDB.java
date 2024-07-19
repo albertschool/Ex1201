@@ -49,7 +49,7 @@ public class HelperDB extends SQLiteOpenHelper {
         db.execSQL(strCreate);
 
         strCreate="CREATE TABLE "+TABLE_GRADES;
-        strCreate+=" ("+KEY_ID+" INTEGER PRIMARY KEY,";
+        strCreate+=" ("+KEY_ID+" INTEGER,";
         strCreate+=" "+SUBJECT+" TEXT,";
         strCreate+=" "+GRADE+" INTEGER";
         strCreate+=");";

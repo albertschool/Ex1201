@@ -13,6 +13,12 @@ public class User {
         this.age = age;
     }
 
+    public User(String name, String password, int age) {
+        this.name = name;
+        this.password = password;
+        this.age = age;
+    }
+
     public User(){}
 
     public int getKey_id() {
