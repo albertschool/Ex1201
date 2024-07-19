@@ -14,6 +14,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -27,10 +28,13 @@ import static com.videxedge.ex1201.Users.TABLE_USERS;
  * <p>
  * in this activity the user can update data of records in the tables
  */
-public class Update extends AppCompatActivity implements AdapterView.OnItemClickListener {
+public class Update extends AppCompatActivity implements AdapterView.OnItemClickListener,
+        AdapterView.OnItemSelectedListener {
 
-    private ListView lVtable, lVrecord, lVfield;
+    private Spinner spinTables;
+    private ListView lVrecord, lVfield;
     private EditText eTdata;
+
     private SQLiteDatabase db;
     private HelperDB hlp;
     private Cursor crsr;
@@ -52,7 +56,7 @@ public class Update extends AppCompatActivity implements AdapterView.OnItemClick
 
         String[] tables={TABLE_USERS,TABLE_GRADES};
         ArrayAdapter<String> adpTable=new ArrayAdapter<String>(this,R.layout.support_simple_spinner_dropdown_item,tables);
-        lVtable.setAdapter(adpTable);
+        spinTables.setAdapter(adpTable);
     }
 
     /**
@@ -61,7 +65,7 @@ public class Update extends AppCompatActivity implements AdapterView.OnItemClick
      * This method init the views& database
      */
     private void initAll() {
-        lVtable=(ListView)findViewById(R.id.lVtable);
+        spinTables=(Spinner)findViewById(R.id.spinTables);
         lVrecord=(ListView)findViewById(R.id.lVrecord);
         lVfield=(ListView)findViewById(R.id.lVfield);
         eTdata=(EditText)findViewById(R.id.eTdata);
@@ -70,8 +74,7 @@ public class Update extends AppCompatActivity implements AdapterView.OnItemClick
         db=hlp.getWritableDatabase();
         db.close();
 
-        lVtable.setOnItemClickListener(this);
-        lVtable.setChoiceMode(AbsListView.CHOICE_MODE_SINGLE);
+        spinTables.setOnItemSelectedListener(this);
         lVrecord.setOnItemClickListener(this);
         lVrecord.setChoiceMode(AbsListView.CHOICE_MODE_SINGLE);
         lVfield.setOnItemClickListener(this);
@@ -89,56 +92,7 @@ public class Update extends AppCompatActivity implements AdapterView.OnItemClick
      */
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        if (lVtable.equals(parent)) {
-            table = position;
-            // table to update
-            tblRec = new ArrayList<>();
-            db = hlp.getReadableDatabase();
-            // read the data
-            switch (table) {
-                case (0): {
-                    crsr = db.query(TABLE_USERS, null, null, null, null, null, null);
-                    int colKEY_ID = crsr.getColumnIndex(Users.KEY_ID);
-                    int colNAME = crsr.getColumnIndex(Users.NAME);
-                    int colPASSWORD = crsr.getColumnIndex(Users.PASSWORD);
-                    int colAGE = crsr.getColumnIndex(Users.AGE);
-
-                    crsr.moveToFirst();
-                    while (!crsr.isAfterLast()) {
-                        int key = crsr.getInt(colKEY_ID);
-                        String name = crsr.getString(colNAME);
-                        String pass = crsr.getString(colPASSWORD);
-                        int age = crsr.getInt(colAGE);
-                        String tmp = "" + key + ", " + name + ", " + pass + ", " + age;
-                        tblRec.add(tmp);
-                        crsr.moveToNext();
-                    }
-                    break;
-                }
-                case (1): {
-                    crsr = db.query(TABLE_GRADES, null, null, null, null, null, null);
-                    int colKEY_ID = crsr.getColumnIndex(Users.KEY_ID);
-                    int colSUBJECT = crsr.getColumnIndex(Grades.SUBJECT);
-                    int colGRADE = crsr.getColumnIndex(Grades.GRADE);
-
-                    crsr.moveToFirst();
-                    while (!crsr.isAfterLast()) {
-                        int key = crsr.getInt(colKEY_ID);
-                        String sub = crsr.getString(colSUBJECT);
-                        int gra = crsr.getInt(colGRADE);
-                        String tmp = "" + key + ", " + sub + ", " + gra;
-                        tblRec.add(tmp);
-                        crsr.moveToNext();
-                    }
-                    break;
-                }
-            }
-            crsr.close();
-            db.close();
-            // display the records
-            adpRecord= new ArrayAdapter<String>(this,R.layout.support_simple_spinner_dropdown_item,tblRec);
-            lVrecord.setAdapter(adpRecord);
-        } else if (lVrecord.equals(parent)) {
+        if (lVrecord.equals(parent)) {
             if (table != -1) {
                 record = position;
                 // record to update
@@ -156,7 +110,6 @@ public class Update extends AppCompatActivity implements AdapterView.OnItemClick
                         int colPASSWORD = crsr.getColumnIndex(Users.PASSWORD);
                         int colAGE = crsr.getColumnIndex(Users.AGE);
 
-                        tblFiled.add(String.valueOf(crsr.getInt(colKEY_ID)));
                         tblFiled.add(crsr.getString(colNAME));
                         tblFiled.add(crsr.getString(colPASSWORD));
                         tblFiled.add(String.valueOf(crsr.getInt(colAGE)));
@@ -207,18 +160,14 @@ public class Update extends AppCompatActivity implements AdapterView.OnItemClick
         if (table==0){
             switch (field) {
                 case (0):
-                    cv.put(KEY_ID, Integer.parseInt(newdata));
-                    db.update(TABLE_USERS,cv,KEY_ID+"=?", new String[]{olddata});
-                    break;
-                case (1):
                     cv.put(Users.NAME, newdata);
                     db.update(TABLE_USERS,cv,Users.NAME+"=?", new String[]{olddata});
                     break;
-                case (2):
+                case (1):
                     cv.put(Users.PASSWORD, newdata);
                     db.update(TABLE_USERS,cv,Users.PASSWORD+"=?", new String[]{olddata});
                     break;
-                case (3):
+                case (2):
                     cv.put(Users.AGE, Integer.parseInt(newdata));
                     db.update(TABLE_USERS,cv,Users.AGE+"=?", new String[]{olddata});
                     break;
@@ -247,6 +196,61 @@ public class Update extends AppCompatActivity implements AdapterView.OnItemClick
         tblFiled.clear();
         adpField.notifyDataSetChanged();
     }
+
+    @Override
+    public void onItemSelected(AdapterView<?> adapterView, View view, int pos, long l) {
+        table = pos;
+        // table to update
+        tblRec = new ArrayList<>();
+        db = hlp.getReadableDatabase();
+        // read the data
+        switch (table) {
+            case (0): {
+                crsr = db.query(TABLE_USERS, null, null, null, null, null, null);
+                int colKEY_ID = crsr.getColumnIndex(Users.KEY_ID);
+                int colNAME = crsr.getColumnIndex(Users.NAME);
+                int colPASSWORD = crsr.getColumnIndex(Users.PASSWORD);
+                int colAGE = crsr.getColumnIndex(Users.AGE);
+
+                crsr.moveToFirst();
+                while (!crsr.isAfterLast()) {
+                    int key = crsr.getInt(colKEY_ID);
+                    String name = crsr.getString(colNAME);
+                    String pass = crsr.getString(colPASSWORD);
+                    int age = crsr.getInt(colAGE);
+                    String tmp = "" + key + ", " + name + ", " + pass + ", " + age;
+                    tblRec.add(tmp);
+                    crsr.moveToNext();
+                }
+                break;
+            }
+            case (1): {
+                crsr = db.query(TABLE_GRADES, null, null, null, null, null, null);
+                int colKEY_ID = crsr.getColumnIndex(Users.KEY_ID);
+                int colSUBJECT = crsr.getColumnIndex(Grades.SUBJECT);
+                int colGRADE = crsr.getColumnIndex(Grades.GRADE);
+
+                crsr.moveToFirst();
+                while (!crsr.isAfterLast()) {
+                    int key = crsr.getInt(colKEY_ID);
+                    String sub = crsr.getString(colSUBJECT);
+                    int gra = crsr.getInt(colGRADE);
+                    String tmp = "" + key + ", " + sub + ", " + gra;
+                    tblRec.add(tmp);
+                    crsr.moveToNext();
+                }
+                break;
+            }
+        }
+        crsr.close();
+        db.close();
+        // display the records
+        adpRecord= new ArrayAdapter<String>(this,R.layout.support_simple_spinner_dropdown_item,tblRec);
+        lVrecord.setAdapter(adpRecord);
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> adapterView) {}
 
     /**
      * onCreateOptionsMenu

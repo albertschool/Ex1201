@@ -14,12 +14,12 @@ import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import java.util.ArrayList;
 
 import static com.videxedge.ex1201.Grades.TABLE_GRADES;
-import static com.videxedge.ex1201.Users.KEY_ID;
 import static com.videxedge.ex1201.Users.TABLE_USERS;
 
 /**
@@ -27,13 +27,16 @@ import static com.videxedge.ex1201.Users.TABLE_USERS;
  * <p>
  * in this activity the user can watch & delete records in the tables
  */
-public class Watchtables extends AppCompatActivity  implements AdapterView.OnItemClickListener {
+public class Watchtables extends AppCompatActivity  implements AdapterView.OnItemClickListener,
+        AdapterView.OnItemSelectedListener {
+
+    private Spinner spinTables;
+    private ListView lvrecords;
 
     private SQLiteDatabase db;
     private HelperDB hlp;
     private Cursor crsr;
 
-    private ListView lvtables, lvrecords;
     private ArrayList<String> tbl = new ArrayList<>();
     private ArrayAdapter adp;
     private int tablechoise;
@@ -44,15 +47,14 @@ public class Watchtables extends AppCompatActivity  implements AdapterView.OnIte
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_watchtables);
 
-        lvtables=(ListView)findViewById(R.id.lvtables);
+        spinTables=(Spinner)findViewById(R.id.spinTables);
         lvrecords=(ListView)findViewById(R.id.lvrecords);
 
         hlp=new HelperDB(this);
         db=hlp.getWritableDatabase();
         db.close();
 
-        lvtables.setOnItemClickListener(this);
-        lvtables.setChoiceMode(AbsListView.CHOICE_MODE_SINGLE);
+        spinTables.setOnItemSelectedListener(this);
         lvrecords.setOnItemClickListener(this);
         lvrecords.setChoiceMode(AbsListView.CHOICE_MODE_SINGLE);
 
@@ -60,7 +62,7 @@ public class Watchtables extends AppCompatActivity  implements AdapterView.OnIte
 
         String[] tables={TABLE_USERS,TABLE_GRADES};
         ArrayAdapter<String> adp=new ArrayAdapter<String>(this,R.layout.support_simple_spinner_dropdown_item,tables);
-        lvtables.setAdapter(adp);
+        spinTables.setAdapter(adp);
 
     }
 
@@ -75,84 +77,82 @@ public class Watchtables extends AppCompatActivity  implements AdapterView.OnIte
      */
     @Override
     public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
-        if (parent == lvtables) {
-            tbl = new ArrayList<>();
-            tablechoise = position + 1;
-            // table to display
-            if (tablechoise != 0) {
-                db = hlp.getReadableDatabase();
-                // read the table
+        String strtmp = tbl.get(position);
+        // alert to ensure delete of record & delete
+        adb = new AlertDialog.Builder(this);
+        adb.setTitle("Are you sure ?");
+        adb.setMessage("Are you sure you want to delete " + strtmp);
+        adb.setPositiveButton("Yes !", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                db = hlp.getWritableDatabase();
                 if (tablechoise == 1) {
-                    crsr = db.query(TABLE_USERS, null, null, null, null, null, null);
-                    int colKEY_ID = crsr.getColumnIndex(Users.KEY_ID);
-                    int colNAME = crsr.getColumnIndex(Users.NAME);
-                    int colPASSWORD = crsr.getColumnIndex(Users.PASSWORD);
-                    int colAGE = crsr.getColumnIndex(Users.AGE);
-
-                    crsr.moveToFirst();
-                    while (!crsr.isAfterLast()) {
-                        int key = crsr.getInt(colKEY_ID);
-                        String name = crsr.getString(colNAME);
-                        String pass = crsr.getString(colPASSWORD);
-                        int age = crsr.getInt(colAGE);
-                        String tmp = "" + key + ", " + name + ", " + pass + ", " + age;
-                        tbl.add(tmp);
-                        crsr.moveToNext();
-                    }
+                    db.delete(TABLE_USERS, Users.KEY_ID+"=?", new String[]{Integer.toString(position + 1)});
                 } else {
-                    crsr = db.query(TABLE_GRADES, null, null, null, null, null, null);
-                    int colKEY_ID = crsr.getColumnIndex(Users.KEY_ID);
-                    int colSUBJECT = crsr.getColumnIndex(Grades.SUBJECT);
-                    int colGRADE = crsr.getColumnIndex(Grades.GRADE);
-
-                    crsr.moveToFirst();
-                    while (!crsr.isAfterLast()) {
-                        int key = crsr.getInt(colKEY_ID);
-                        String sub = crsr.getString(colSUBJECT);
-                        int gra = crsr.getInt(colGRADE);
-                        String tmp = "" + key + ", " + sub + ", " + gra;
-                        tbl.add(tmp);
-                        crsr.moveToNext();
-                    }
+                    db.delete(TABLE_GRADES, Grades._ID+"=?", new String[]{Integer.toString(position + 1)});
                 }
-                crsr.close();
                 db.close();
-                // display the table
-                adp = new ArrayAdapter<String>(this, R.layout.support_simple_spinner_dropdown_item, tbl);
-                lvrecords.setAdapter(adp);
-            } else {
-                Toast.makeText(this, "Choose table first !", Toast.LENGTH_LONG).show();
+                tbl.remove(position);
+                adp.notifyDataSetChanged();
+            }
+        });
+        adb.setNeutralButton("Cancel !", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+        AlertDialog ad = adb.create();
+        ad.show();
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> adapterView, View view, int pos, long l) {
+        tbl.clear();
+        db = hlp.getReadableDatabase();
+        // read the table
+        if (pos == 0) {
+            crsr = db.query(TABLE_USERS, null, null, null, null, null, null);
+            int colKEY_ID = crsr.getColumnIndex(Users.KEY_ID);
+            int colNAME = crsr.getColumnIndex(Users.NAME);
+            int colPASSWORD = crsr.getColumnIndex(Users.PASSWORD);
+            int colAGE = crsr.getColumnIndex(Users.AGE);
+
+            crsr.moveToFirst();
+            while (!crsr.isAfterLast()) {
+                int key = crsr.getInt(colKEY_ID);
+                String name = crsr.getString(colNAME);
+                String pass = crsr.getString(colPASSWORD);
+                int age = crsr.getInt(colAGE);
+                String tmp = "" + key + ", " + name + ", " + pass + ", " + age;
+                tbl.add(tmp);
+                crsr.moveToNext();
             }
         } else {
-            String strtmp = tbl.get(position);
-            // alert to ensure delete of record & delete
-            adb = new AlertDialog.Builder(this);
-            adb.setTitle("Are you sure ?");
-            adb.setMessage("Are you sure you want to delete " + strtmp);
-            adb.setPositiveButton("Yes !", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    db = hlp.getWritableDatabase();
-                    if (tablechoise == 1) {
-                        db.delete(TABLE_USERS, KEY_ID+"=?", new String[]{Integer.toString(position + 1)});
-                    } else {
-                        db.delete(TABLE_GRADES, KEY_ID+"=?", new String[]{Integer.toString(position + 1)});
-                    }
-                    db.close();
-                    tbl.remove(position);
-                    adp.notifyDataSetChanged();
-                }
-            });
-            adb.setNeutralButton("Cancel !", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.cancel();
-                }
-            });
-            AlertDialog ad = adb.create();
-            ad.show();
+            crsr = db.query(TABLE_GRADES, null, null, null, null, null, null);
+            int colKEY_ID = crsr.getColumnIndex(Grades.KEY_ID);
+            int colSUBJECT = crsr.getColumnIndex(Grades.SUBJECT);
+            int colGRADE = crsr.getColumnIndex(Grades.GRADE);
+
+            crsr.moveToFirst();
+            while (!crsr.isAfterLast()) {
+                int key = crsr.getInt(colKEY_ID);
+                String sub = crsr.getString(colSUBJECT);
+                int gra = crsr.getInt(colGRADE);
+                String tmp = "" + key + ", " + sub + ", " + gra;
+                tbl.add(tmp);
+                crsr.moveToNext();
+            }
         }
+        crsr.close();
+        db.close();
+        // display the table
+        adp = new ArrayAdapter<String>(this, R.layout.support_simple_spinner_dropdown_item, tbl);
+        lvrecords.setAdapter(adp);
     }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> adapterView) {}
 
     /**
      * onCreateOptionsMenu

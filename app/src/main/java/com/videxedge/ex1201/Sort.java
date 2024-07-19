@@ -12,6 +12,7 @@ import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -24,9 +25,12 @@ import static com.videxedge.ex1201.Users.TABLE_USERS;
  * <p>
  * in this activity the user can view the tables sorted by desired field
  */
-public class Sort extends AppCompatActivity implements AdapterView.OnItemClickListener {
+public class Sort extends AppCompatActivity implements AdapterView.OnItemClickListener,
+        AdapterView.OnItemSelectedListener {
 
-    private ListView lVtbl, lVfld2sort, lVsorted;
+    private Spinner spinTables;
+    private ListView lVfld2sort, lVsorted;
+
     private SQLiteDatabase db;
     private HelperDB hlp;
     private Cursor crsr;
@@ -56,7 +60,7 @@ public class Sort extends AppCompatActivity implements AdapterView.OnItemClickLi
 
         tables= new String[]{TABLE_USERS, TABLE_GRADES};
         ArrayAdapter<String> adpTables=new ArrayAdapter<String>(this,R.layout.support_simple_spinner_dropdown_item,tables);
-        lVtbl.setAdapter(adpTables);
+        spinTables.setAdapter(adpTables);
     }
 
     /**
@@ -65,7 +69,7 @@ public class Sort extends AppCompatActivity implements AdapterView.OnItemClickLi
      * This method init the views& database
      */
     private void initAll() {
-        lVtbl=(ListView)findViewById(R.id.lVtbl);
+        spinTables=(Spinner)findViewById(R.id.spinTables);
         lVfld2sort=(ListView)findViewById(R.id.lVfld2sort);
         lVsorted=(ListView)findViewById(R.id.lVsorted);
 
@@ -73,8 +77,7 @@ public class Sort extends AppCompatActivity implements AdapterView.OnItemClickLi
         db=hlp.getWritableDatabase();
         db.close();
 
-        lVtbl.setOnItemClickListener(this);
-        lVtbl.setChoiceMode(AbsListView.CHOICE_MODE_SINGLE);
+        spinTables.setOnItemSelectedListener(this);
         lVfld2sort.setOnItemClickListener(this);
         lVfld2sort.setChoiceMode(AbsListView.CHOICE_MODE_SINGLE);
     }
@@ -90,19 +93,7 @@ public class Sort extends AppCompatActivity implements AdapterView.OnItemClickLi
      */
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        if (lVtbl.equals(parent)) {
-            table = position;
-            // table to sort
-            if (table==0) {
-                tbl2sort= TABLE_USERS;
-                fields= new String[]{Users.KEY_ID, Users.NAME, Users.PASSWORD, Users.AGE};
-            } else {
-                tbl2sort= TABLE_GRADES;
-                fields= new String[]{Users.KEY_ID, Grades.SUBJECT, Grades.GRADE};
-            }
-            ArrayAdapter<String> adpFields=new ArrayAdapter<String>(this,R.layout.support_simple_spinner_dropdown_item,fields);
-            lVfld2sort.setAdapter(adpFields);
-        } else if (lVfld2sort.equals(parent)) {
+        if (lVfld2sort.equals(parent)) {
             if (table != -1) {
                 tbl = new ArrayList<>();
                 db=hlp.getReadableDatabase();
@@ -151,6 +142,24 @@ public class Sort extends AppCompatActivity implements AdapterView.OnItemClickLi
             }
         }
     }
+
+    @Override
+    public void onItemSelected(AdapterView<?> adapterView, View view, int pos, long l) {
+        table = pos;
+        // table to sort
+        if (table==0) {
+            tbl2sort= TABLE_USERS;
+            fields= new String[]{Users.KEY_ID, Users.NAME, Users.PASSWORD, Users.AGE};
+        } else {
+            tbl2sort= TABLE_GRADES;
+            fields= new String[]{Grades.KEY_ID, Grades.SUBJECT, Grades.GRADE};
+        }
+        ArrayAdapter<String> adpFields=new ArrayAdapter<String>(this,R.layout.support_simple_spinner_dropdown_item,fields);
+        lVfld2sort.setAdapter(adpFields);
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> adapterView) {}
 
     /**
      * onCreateOptionsMenu
